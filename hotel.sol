@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
+
+contract Hotel{
+    address payable public owner;
+    enum Stateuses{ Vacant , Occupied }
+    Stateuses currentState;
+    constructor() public{
+        owner = msg.sender;
+        currentState = Stateuses.Vacant;
+    }
+    modifier onlywhileVaca nt{
+        require(currentState == Stateuses.Vacant , "Currently occupied");
+        _;
+    }
+    modifier costs(uint _amount){
+        require(msg.value >= _amount, "Not enough Ether provided");
+        _;
+    }
+    receive() external payable onlywhileVacant costs(2 ether){
+        owner.transfer(msg.value);
+        currentState = Stateuses.Occupied;
+    }
+}
